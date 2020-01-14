@@ -39,7 +39,7 @@ function Point (x, y) {
 }
 
 function Particle (x, y, velocity) {
-    const { p0, p1, p2, p3 } = createPath(x, y, this.velocity);
+    const { p0, p1, p2, p3 } = createPath(x, y, velocity);
     this.p0 = p0;
     this.p1 = p1;
     this.p2 = p2;
@@ -106,13 +106,11 @@ Particle.prototype = {
 
 function Explosion(x, y, velocity) {
     this.complete = false;
-    this.particles = new Array(10);
-    
-    for (let i = 0; i < this.particles.length; i++) {
+    this.particles = [];
+
+    for (let i = 0; i < 64; i++) {
         this.particles.push(new Particle(x, y, velocity));
     }
-
-    console.log(this.particles.length);
 
     // this.x = x;
     // this.x = y;
@@ -120,11 +118,11 @@ function Explosion(x, y, velocity) {
 
 Explosion.prototype = {
     update: function () {
-        // this.particles.forEach((p, i) => {
-        //     if (!p.complete) {
-        //         p.update();
-        //     }
-        // });
+        this.particles.forEach((p, i) => {
+            if (!p.complete) {
+                p.update();
+            }
+        });
     }
 }
 
@@ -280,13 +278,13 @@ function createPath(x, y, velocity) {
 
 function loop() {
     ctx.clearRect(0, 0, viewWidth, viewHeight);
-    // explosions.forEach((e, i) => {
-    //     if (e.complete) {
-    //         // Pool it!
-    //     } else {
-    //         e.update();
-    //     }
-    // });
+    explosions.forEach((e, i) => {
+        if (e.complete) {
+            // Pool it!
+        } else {
+            e.update();
+        }
+    });
 
     animId = requestAnimationFrame(loop);
 }
