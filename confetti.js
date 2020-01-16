@@ -94,7 +94,7 @@ Particle.prototype = {
         this.x = p.x;
         this.y = p.y;
 
-        this.complete = this.time === this.duration;
+        this.complete = this.time >= this.duration;
 
         this.draw();
     }
@@ -103,14 +103,15 @@ Particle.prototype = {
 function Explosion(x, y, velocity) {
     this.complete = false;
     this.particles = [];
+    const particleCount = Math.floor(Math.random() * 75) + 50;
 
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < particleCount; i++) {
         this.particles.push(new Particle(x, y, velocity));
     }
 
     this.activeParticles = this.particles.length;
-    // this.x = x;
-    // this.x = y;
+    this.x = x;
+    this.y = y;
 }
 
 Explosion.prototype = {
@@ -118,6 +119,8 @@ Explosion.prototype = {
         this.activeParticles = this.particles.length;
         this.complete = false;
         this.particles.forEach((p, i) => p.reset(x, y));
+        this.x = x;
+        this.y = y;
     },
     update: function () {
         this.particles.forEach((p, i) => {
@@ -169,17 +172,16 @@ function setDimensions() {
 
 function explode({ x, y }) {
     explosions.allocate().reset(x, y);
-    console.log(explosions);
 }
 
 function init() {
     canvas = document.querySelector('canvas');
     ctx = canvas.getContext('2d');
-    explosions = new Pool(new Explosion(0, 0, 300), 10);
+    explosions = new Pool(new Explosion(10, 10, 300), 10);
 
-    // for (let i = 0; i < 15; i ++) {
-    //     explosions.inactive.push(new Explosion(0, 0, 300));
-    // }
+    for (let i = 0; i < 15; i ++) {
+        explosions.inactive.push(new Explosion(0, 0, 300));
+    }
 
     setDimensions();
 
@@ -189,3 +191,17 @@ function init() {
 }
 
 init();
+
+// function Child(eyeballs) {
+//     this.eyeballs = eyeballs;
+// }
+// Child.prototype.complaing = () => console.log('Complain');
+
+// function Parent(child) {
+//     this.child = Object.assign(Object.create(Object.getPrototypeOf(child)), child);
+//     this.child2 = Object.assign(Object.create(Object.getPrototypeOf(child)), child);
+//     this.child.eyeballs = 1;
+//     console.log(child, this.child);
+// }
+
+// const parent = new Parent(new Child(2));

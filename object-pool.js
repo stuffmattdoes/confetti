@@ -1,27 +1,32 @@
+const cloneInstance = obj => Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
+
 function Pool(obj, count) {
     this.active = [];
     this.inactive = [];
-    this.obj = Object.assign(obj, {});
+    // this.pbj = cloneInstance(obj);
 
-    for (let i = 0; i < count; i++) {
-        let poolObj = Object.assign(Object.create(Object.getPrototypeOf(this.obj)), this.obj);
-        poolObj._poolKey = i;
-        this.inactive.push(poolObj);
-    }
+    // for (let i = 0; i < count; i++) {
+    //     let clonedInstance = cloneInstance(obj);
+    //     clonedInstance._poolKey = i;
+    //     this.inactive.push(clonedInstance);
+    // }
+
+    console.log(this.inactive);
 }
 
 Pool.prototype = {
     allocate: function () {
-        let instance;
+        let objInstance;
 
         if (this.inactive.length) {
-            instance = this.inactive.shift();
+            objInstance = this.inactive.shift();
         } else {
-            instance = this.obj;
+            objInstance = cloneInstance(this.obj);
         }
 
-        this.active.push(instance);
-        return instance;
+        this.active.push(objInstance);
+
+        return objInstance;
     },
     pool: function (obj) {
         const activeIndex = this.active.findIndex(activeObj => activeObj._poolKey === obj._poolKey);
